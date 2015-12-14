@@ -11,18 +11,23 @@ int zPin = A0; // z lead goes to analog 0
 int xRead, xRest, yRead, yRest, zRead, zRest; //variables for the readout of each pin, as well as the resting position
 int gX, gY, gZ; //gyro variables
 
+
+int ledPin = 13; //declare 13(the built in LED on the uno) as ledpin
+
 void setup()
 {
   //Declare pins as inputs, not necessarily needed but explicit is generally getter then implicit
   pinMode(xPin, INPUT);
   pinMode(yPin, INPUT);
   pinMode(zPin, INPUT);
+  //output to ledPin
+  pinMode(ledPin, OUTPUT);
 
   //begin serial
   Serial.begin(9600);
 
   
-  digitalWrite(ledPin2, HIGH); //turn on LED so we know not to move the accelerometer, as we are setting the resting position.
+  digitalWrite(ledPin, HIGH); //turn on LED so we know not to move the accelerometer, as we are setting the resting position.
   delay(2000); //wait two seconds just in case you want to change the resting position
   xRest = analogRead(xPin); //set xrest
   yRest = analogRead(yPin); //set yrest
@@ -35,14 +40,16 @@ void setup()
   Serial.print(yRest);
   Serial.print(" Z resting value: ");
   Serial.println(zRest);
-  digitalWrite(ledPin2, LOW);
+  digitalWrite(ledPin, LOW);
 
 }
 
 
 void loop()
 {
-  
+  getXYZ(); //runs the loop for the accelerometer
+  printXYZ(); //prints the XYZ degress
+  printDirection(); //prints the direction the accelerometer is tilting.
 }
 
 void getXYZ()
@@ -91,9 +98,9 @@ void printXYZ()
 void printDirection()
 {
   //lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("          ");
-  lcd.setCursor(0,0);
+  //lcd.setCursor(0,0);
+  //lcd.print("          ");
+  //lcd.setCursor(0,0);
   if(gX > 15)
   {
     
