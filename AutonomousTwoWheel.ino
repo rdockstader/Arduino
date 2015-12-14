@@ -1,3 +1,4 @@
+//AFMotor.h will need to be downloaded. Instructions/Link to download @ https://learn.adafruit.com/adafruit-motor-shield/library-install
 #include <AFMotor.h>
 #include <Servo.h>
 
@@ -5,13 +6,14 @@
 const int trigPin = 19;
 const int echoPin = 18;
 long duration, inches;
+int checkDistance = 12; //adjusting this int will adjust the distance the ping sensor will check before stopping the car.
 
 
 //Servo
 Servo servo1;
 
 
-//Dc Motors
+//Dc Motors (using the AFMotor library from adafruit)
 AF_DCMotor leftMotor(4);
 AF_DCMotor rightMotor(3);
 int curSpeed = 255;
@@ -40,6 +42,8 @@ void setup()
 
 void loop() 
 {
+  //Servo isn't working, so this is just a basic check in front, otherwise turn left. 
+  //Better functions with working server are below.
   ping();
 
   if(inches <= 12)
@@ -72,10 +76,10 @@ long microsecondsToInches(long microseconds)
   return microseconds / 74 / 2; 
 } 
 
-bool footCheck()
+bool pingCheck()
 {
   ping();
-  if(inches <= 12)
+  if(inches <= checkDistance) //set in global variables at the top of file
   {
     return true; 
   }
@@ -92,7 +96,7 @@ bool canGoForward()
   {
     servo1.write(90);
   }
-  goForward = footCheck();
+  goForward = pingCheck();
   return goForward;
   
 }
@@ -101,7 +105,7 @@ bool canGoLeft()
 {
   bool goLeft = false;
   servo1.write(180);
-  goLeft = footCheck();
+  goLeft = pingCheck();
   servo1.write(90);
   return goLeft;
 }
@@ -109,7 +113,7 @@ bool canGoRight()
 {
   bool goRight = false;
   servo1.write(0);
-  goRight = footCheck();
+  goRight = pingCheck();
   servo1.write(90);
   return goRight;
 }
