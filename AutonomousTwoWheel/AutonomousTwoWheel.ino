@@ -29,7 +29,7 @@ void setup()
   leftMotor.run(RELEASE);
 
   //servo
-  servo1.attach(9);
+  servo1.attach(10);
 
   //ping
   pinMode(echoPin, INPUT);
@@ -42,19 +42,30 @@ void setup()
 
 void loop() 
 {
-  //Servo isn't working, so this is just a basic check in front, otherwise turn left. 
-  //Better functions with working server are below.
-  ping();
-
-  if(inches <= 12)
+  if(canGoForward())
   {
-     carStop();
-     delay(1000);
-     turnLeft();  
+    moveForward();
+  }
+  else if(canGoLeft())
+  {
+    turnLeft();
+  }
+  else if(canGoRight())
+  {
+    turnRight();
   }
   else
   {
-    moveForward();
+    moveBackward();
+    delay(2000);
+    if(canGoLeft())
+    {
+      turnLeft();
+    }
+    else
+    {
+      turnRight();
+    }
   }
 }
 
@@ -96,6 +107,7 @@ bool canGoForward()
   {
     servo1.write(90);
   }
+  delay(500);
   goForward = pingCheck();
   return goForward;
   
@@ -105,6 +117,7 @@ bool canGoLeft()
 {
   bool goLeft = false;
   servo1.write(180);
+  delay(500);
   goLeft = pingCheck();
   servo1.write(90);
   return goLeft;
@@ -113,6 +126,7 @@ bool canGoRight()
 {
   bool goRight = false;
   servo1.write(0);
+  delay(500);
   goRight = pingCheck();
   servo1.write(90);
   return goRight;
@@ -269,6 +283,22 @@ void motortest()
   leftMotor.run(RELEASE);
   rightMotor.run(RELEASE);
   delay(3000);
+}
+
+void basicMovement()
+{
+    ping();
+
+  if(inches <= 12)
+  {
+     carStop();
+     delay(1000);
+     turnLeft();  
+  }
+  else
+  {
+    moveForward();
+  }
 }
 
 
