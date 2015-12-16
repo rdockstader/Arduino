@@ -35,6 +35,9 @@ void setup()
   pinMode(echoPin, INPUT);
   pinMode(trigPin, OUTPUT);
 
+  //Serial.begin(9600);
+  //Serial.println("Serial begin");
+
   //pause for 10 seconds before begining loop
   delay(10000);
 }
@@ -42,31 +45,38 @@ void setup()
 
 void loop() 
 {
+  
   if(canGoForward())
   {
     moveForward();
   }
-  else if(canGoLeft())
-  {
-    turnLeft();
-  }
-  else if(canGoRight())
-  {
-    turnRight();
-  }
   else
   {
-    moveBackward();
-    delay(2000);
+    carStop();
     if(canGoLeft())
     {
       turnLeft();
     }
-    else
+    else if(canGoRight())
     {
       turnRight();
     }
+    else
+    {
+      moveBackward();
+      delay(2000);
+      carStop();
+      if(canGoLeft())
+      {
+        turnLeft();
+      }
+      else
+      {
+        turnRight();
+      }
+    }
   }
+  
 }
 
 //ping functions
@@ -90,7 +100,7 @@ long microsecondsToInches(long microseconds)
 bool pingCheck()
 {
   ping();
-  if(inches <= checkDistance) //set in global variables at the top of file
+  if(inches >= checkDistance) //set in global variables at the top of file
   {
     return true; 
   }
@@ -107,7 +117,7 @@ bool canGoForward()
   {
     servo1.write(90);
   }
-  delay(500);
+  delay(1000);
   goForward = pingCheck();
   return goForward;
   
@@ -117,7 +127,7 @@ bool canGoLeft()
 {
   bool goLeft = false;
   servo1.write(180);
-  delay(500);
+  delay(1000);
   goLeft = pingCheck();
   servo1.write(90);
   return goLeft;
@@ -126,7 +136,7 @@ bool canGoRight()
 {
   bool goRight = false;
   servo1.write(0);
-  delay(500);
+  delay(1000);
   goRight = pingCheck();
   servo1.write(90);
   return goRight;
