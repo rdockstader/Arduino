@@ -26,7 +26,7 @@ void setup()
   leftMotor.setSpeed(curSpeed);
   rightMotor.setSpeed(curSpeed);
   leftMotor.run(RELEASE);
-  leftMotor.run(RELEASE);
+  rightMotor.run(RELEASE);
 
   //servo
   servo1.attach(10);
@@ -113,11 +113,11 @@ bool pingCheck()
 bool canGoForward()
 {
   bool goForward = false;
-  if(servo1.read() != 90)
-  {
-    servo1.write(90);
-  }
-  delay(1000);
+  //if(servo1.read() != 90)
+  //{
+  //  servo1.write(90);
+  //}
+  //delay(1000);
   goForward = pingCheck();
   return goForward;
   
