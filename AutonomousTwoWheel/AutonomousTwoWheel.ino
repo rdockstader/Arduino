@@ -6,11 +6,12 @@
 const int trigPin = 19;
 const int echoPin = 18;
 long duration, inches;
-int checkDistance = 12; //adjusting this int will adjust the distance the ping sensor will check before stopping the car.
+int checkDistance = 6; //adjusting this int will adjust the distance the ping sensor will check before stopping the car.
 
 
 //Servo
 Servo servo1;
+Servo servo2;
 
 
 //Dc Motors (using the AFMotor library from adafruit)
@@ -19,6 +20,7 @@ AF_DCMotor rightMotor(3);
 int curSpeed = 255;
 const int maxSpeed = 255;
 const int minSpeed = 0;
+int beginDelay = 5; //delay in seconds prior to starting loop.
 
 void setup() 
 {
@@ -30,6 +32,7 @@ void setup()
 
   //servo
   servo1.attach(10);
+  servo2.attach(9);
 
   //ping
   pinMode(echoPin, INPUT);
@@ -39,14 +42,58 @@ void setup()
   //Serial.println("Serial begin");
 
   //pause for 10 seconds before begining loop
-  delay(10000);
+  delay(beginDelay*1000);
 }
 
 
 void loop() 
 {
-  
-  if(canGoForward())
+  //uncomment to test motors
+  //motorTest();
+  //uncomment to run without servo usage
+  basicCarMovement();
+  //uncomment to run with servo usage
+  //advancedCarMovement();
+}
+
+//Car Movements
+
+void motorTest()
+{
+  leftMotor.run(FORWARD);
+  rightMotor.run(FORWARD);
+  delay(5000);
+  leftMotor.run(RELEASE);
+  rightMotor.run(RELEASE);
+  delay(3000);
+  leftMotor.run(BACKWARD);
+  rightMotor.run(BACKWARD);
+  delay(5000);
+  leftMotor.run(RELEASE);
+  rightMotor.run(RELEASE);
+  delay(3000);
+}
+
+void basicCarMovement()
+{
+    ping();
+
+  if(inches <= 12)
+  {
+     carStop();
+     delay(1000);
+     turnLeft();  
+  }
+  else
+  {
+    moveForward();
+  }
+}
+
+
+void advancedCarMovement()
+{
+    if(canGoForward())
   {
     moveForward();
   }
@@ -76,7 +123,6 @@ void loop()
       }
     }
   }
-  
 }
 
 //ping functions
@@ -117,7 +163,7 @@ bool canGoForward()
   //{
   //  servo1.write(90);
   //}
-  //delay(1000);
+  delay(100);
   goForward = pingCheck();
   return goForward;
   
@@ -276,40 +322,3 @@ void turnRight360()
   leftMotor.setSpeed(curSpeed);
   rightMotor.setSpeed(curSpeed);
 }
-
-//Motor Test
-
-void motortest()
-{
-  leftMotor.run(FORWARD);
-  rightMotor.run(FORWARD);
-  delay(5000);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  delay(3000);
-  leftMotor.run(BACKWARD);
-  rightMotor.run(BACKWARD);
-  delay(5000);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  delay(3000);
-}
-
-void basicMovement()
-{
-    ping();
-
-  if(inches <= 12)
-  {
-     carStop();
-     delay(1000);
-     turnLeft();  
-  }
-  else
-  {
-    moveForward();
-  }
-}
-
-
-
