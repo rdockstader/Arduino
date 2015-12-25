@@ -1,3 +1,7 @@
+//Toggle Debug Mode (disables motors, and insteads outputs direction, etc. to the the serial monitor).
+bool debugMode = true; //True turns on debugMode, false disable debugMode, and will run the motors.
+
+
 //AFMotor.h will need to be downloaded. Instructions/Link to download @ https://learn.adafruit.com/adafruit-motor-shield/library-install
 #include <AFMotor.h>
 #include <Servo.h>
@@ -11,7 +15,6 @@ int checkDistance = 6; //adjusting this int will adjust the distance the ping se
 
 //Servo
 Servo servo1;
-Servo servo2;
 
 
 //Dc Motors (using the AFMotor library from adafruit)
@@ -25,24 +28,30 @@ int beginDelay = 5; //delay in seconds prior to starting loop.
 void setup() 
 {
   //DC Motors
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-
+  if(debugMode == false)
+  {
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+  }
   //servo
   servo1.attach(10);
-  servo2.attach(9);
 
   //ping
   pinMode(echoPin, INPUT);
   pinMode(trigPin, OUTPUT);
 
-  //Serial.begin(9600);
-  //Serial.println("Serial begin");
-
-  //pause for 10 seconds before begining loop
-  delay(beginDelay*1000);
+  if(debugMode == true)
+  {
+    Serial.begin(9600);
+    Serial.println("Serial begin -----  Debug Mode Enabled");
+  }
+  //pause for x seconds before begining loop
+  if(debugMode == false)
+  {
+    delay(beginDelay*1000);
+  }
 }
 
 
@@ -50,10 +59,12 @@ void loop()
 {
   //uncomment to test motors
   //motorTest();
+  
   //uncomment to run without servo usage
-  basicCarMovement();
+  //basicCarMovement();
+  
   //uncomment to run with servo usage
-  //advancedCarMovement();
+  advancedCarMovement();
 }
 
 //Car Movements
@@ -193,18 +204,36 @@ bool canGoRight()
 
 void moveForward()
 {
-  leftMotor.run(FORWARD);
-  rightMotor.run(FORWARD);
+  if(debugMode == true)
+  {
+    Serial.println("Move Forward");
+  }
+  else
+  {
+    leftMotor.run(FORWARD);
+    rightMotor.run(FORWARD);
+  }
 }
 
 void moveBackward()
 {
-  leftMotor.run(BACKWARD);
-  rightMotor.run(BACKWARD);
+  if(debugMode == true)
+  {
+    Serial.println("Move Backward");
+  }
+  else
+  {
+    leftMotor.run(BACKWARD);
+    rightMotor.run(BACKWARD);
+  }
 }
 
 void carStop()
 {
+  if(debugMode == true)
+  {
+    Serial.println("Car Stop");
+  }
   leftMotor.run(RELEASE);
   rightMotor.run(RELEASE);
 }
@@ -223,9 +252,17 @@ void setCurSpeed(int sp)
   {
     curSpeed = sp;
   }
-  
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+
+  if(debugMode == true)
+  {
+    Serial.print("Set Speed to: ");
+    Serial.println(curSpeed);
+  }
+  else
+  {
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
 
 
@@ -233,92 +270,134 @@ void setCurSpeed(int sp)
 
 void turnLeft()
 {
-  leftMotor.setSpeed(maxSpeed);
-  rightMotor.setSpeed(maxSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.run(BACKWARD);
-  rightMotor.run(FORWARD);
-  delay(200);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+    if(debugMode == true)
+  {
+    Serial.println("Turn Left");
+  }
+  else
+  {
+    leftMotor.setSpeed(maxSpeed);
+    rightMotor.setSpeed(maxSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.run(BACKWARD);
+    rightMotor.run(FORWARD);
+    delay(200);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
 
 void turnLeft180()
 {
-  leftMotor.setSpeed(maxSpeed);
-  rightMotor.setSpeed(maxSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.run(BACKWARD);
-  rightMotor.run(FORWARD);
-  delay(400);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+  if(debugMode == true)
+  {
+    Serial.println("Turl Left 180");
+  }
+  else
+  {
+    leftMotor.setSpeed(maxSpeed);
+    rightMotor.setSpeed(maxSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.run(BACKWARD);
+    rightMotor.run(FORWARD);
+    delay(400);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
 
 void turnLeft360()
 {
-  leftMotor.setSpeed(maxSpeed);
-  rightMotor.setSpeed(maxSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.run(BACKWARD);
-  rightMotor.run(FORWARD);
-  delay(800);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+  if(debugMode == true)
+  {
+    Serial.println("Turn Left 360");
+  }
+  else
+  {
+    leftMotor.setSpeed(maxSpeed);
+    rightMotor.setSpeed(maxSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.run(BACKWARD);
+    rightMotor.run(FORWARD);
+    delay(800);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
 
 //right turns
 
 void turnRight()
 {
-  leftMotor.setSpeed(maxSpeed);
-  rightMotor.setSpeed(maxSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.run(FORWARD);
-  rightMotor.run(BACKWARD);
-  delay(200);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+  if(debugMode == true)
+  {
+    Serial.println("Turn Right");
+  }
+  else
+  {
+    leftMotor.setSpeed(maxSpeed);
+    rightMotor.setSpeed(maxSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.run(FORWARD);
+    rightMotor.run(BACKWARD);
+    delay(200);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
 
 void turnRight180()
 {
-  leftMotor.setSpeed(maxSpeed);
-  rightMotor.setSpeed(maxSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.run(FORWARD);
-  rightMotor.run(BACKWARD);
-  delay(400);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+  if(debugMode == true)
+  {
+    Serial.println("Turn Right 180");
+  }
+  else
+  {
+    leftMotor.setSpeed(maxSpeed);
+    rightMotor.setSpeed(maxSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.run(FORWARD);
+    rightMotor.run(BACKWARD);
+    delay(400);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
 
 void turnRight360()
 {
-  leftMotor.setSpeed(maxSpeed);
-  rightMotor.setSpeed(maxSpeed);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.run(FORWARD);
-  rightMotor.run(BACKWARD);
-  delay(800);
-  leftMotor.run(RELEASE);
-  rightMotor.run(RELEASE);
-  leftMotor.setSpeed(curSpeed);
-  rightMotor.setSpeed(curSpeed);
+  if(debugMode == true)
+  {
+    Serial.println("Turn Right 360");
+  }
+  else
+  {
+    leftMotor.setSpeed(maxSpeed);
+    rightMotor.setSpeed(maxSpeed);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.run(FORWARD);
+    rightMotor.run(BACKWARD);
+    delay(800);
+    leftMotor.run(RELEASE);
+    rightMotor.run(RELEASE);
+    leftMotor.setSpeed(curSpeed);
+    rightMotor.setSpeed(curSpeed);
+  }
 }
